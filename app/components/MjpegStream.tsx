@@ -29,7 +29,6 @@ const MjpegStream: React.FC<MjpegStreamProps> = ({
   onError,
   onLoad,
   showRefreshButton = true,
-  objectFit = 'cover',
   autoOptimizeDimensions = true,
 }) => {
   const [isLoading, setIsLoading] = useState(true);

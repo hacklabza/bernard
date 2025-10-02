@@ -17,7 +17,6 @@ const Joystick: React.FC<JoystickProps> = ({
   maxDistance,
 }) => {
   const [knobPosition, setKnobPosition] = useState({ x: 0, y: 0 });
-  const centerPosition = useRef({ x: size / 2, y: size / 2 });
   const maxDist = maxDistance || size / 2 - 15; // Default max distance
 
   const panResponder = useRef(
@@ -65,7 +64,6 @@ const Joystick: React.FC<JoystickProps> = ({
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      {/* Base circle */}
       <View
         style={[
           styles.base,
@@ -77,8 +75,6 @@ const Joystick: React.FC<JoystickProps> = ({
           },
         ]}
       />
-
-      {/* Knob */}
       <View
         style={[
           styles.knob,

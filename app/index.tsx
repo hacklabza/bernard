@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 import Joystick from "./components/Joystick";
 import MjpegStream from "./components/MjpegStream";
 import { useRef, useState, useEffect } from "react";
@@ -110,25 +110,6 @@ export default function Index() {
     }
   };
 
-  // Dynamic camera stream sizing based on orientation
-  const getCameraStreamStyle = () => {
-    if (isLandscape) {
-      // In landscape: take up most of the screen, leave room for joystick
-      return {
-        width: screenData.width - 200, // Leave space for joystick
-        height: screenData.height - 100, // Leave space for top/bottom margins
-        maxHeight: screenData.height * 0.8,
-      };
-    } else {
-      // In portrait: take up upper portion of screen
-      return {
-        width: screenData.width - 40, // Margins on sides
-        height: screenData.height * 0.5, // Take up half the screen
-        maxHeight: 400,
-      };
-    }
-  };
-
   return (
     <View style={styles.container}>
 
@@ -165,7 +146,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    // Remove paddingTop to fill entire screen
   },
   text: {
     fontSize: 16,
