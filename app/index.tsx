@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 import Joystick from "./components/Joystick";
+import MjpegStream from "./components/MjpegStream";
 import { useRef, useState, useEffect } from "react";
-import { drivetrainService, type DriveCommand } from "../services/api";
+import { drivetrainService, type DriveCommand, cameraService } from "../services/api";
 
 export default function Index() {
   const isCommandInProgress = useRef(false);
@@ -9,6 +10,7 @@ export default function Index() {
   const [isLandscape, setIsLandscape] = useState(
     screenData.width > screenData.height
   );
+  const baseStreamUrl = cameraService.getStreamUrl();
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
@@ -108,17 +110,47 @@ export default function Index() {
     }
   };
 
+  // Dynamic camera stream sizing based on orientation
+  const getCameraStreamStyle = () => {
+    if (isLandscape) {
+      // In landscape: take up most of the screen, leave room for joystick
+      return {
+        width: screenData.width - 200, // Leave space for joystick
+        height: screenData.height - 100, // Leave space for top/bottom margins
+        maxHeight: screenData.height * 0.8,
+      };
+    } else {
+      // In portrait: take up upper portion of screen
+      return {
+        width: screenData.width - 40, // Margins on sides
+        height: screenData.height * 0.5, // Take up half the screen
+        maxHeight: 400,
+      };
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        {isLandscape ? 'Landscape Mode' : 'Portrait Mode'} - Robot Controller
-      </Text>
+
+      {/* Camera Stream */}
+      <View style={styles.cameraContainer}>
+        <MjpegStream
+          baseUrl={baseStreamUrl}
+          containerWidth={screenData.width}
+          containerHeight={screenData.height}
+          style={styles.fullScreenStream}
+          fallbackText="Robot Camera"
+          onError={(error) => console.error('Camera stream error:', error)}
+          onLoad={() => console.log('Camera stream loaded successfully')}
+          autoOptimizeDimensions={true}
+        />
+      </View>
 
       {/* Joystick with dynamic positioning */}
       <View style={getJoystickStyle()}>
         <Joystick
           onMove={handleJoystickMove}
-          size={isLandscape ? 120 : 100} // Slightly smaller in landscape
+          size={100}
           color="#F0F0F0"
           knobColor="#4A90E2"
         />
@@ -130,14 +162,28 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
+    // Remove paddingTop to fill entire screen
   },
   text: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
     paddingHorizontal: 20,
+  },
+  cameraContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  fullScreenStream: {
+    width: '100%',
+    height: '100%',
   },
 });
