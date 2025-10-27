@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from 'expo-status-bar';
-import { RobotProvider } from './contexts/RobotContext';
+import { RobotProvider } from '../contexts/RobotContext';
 
 export default function RootLayout() {
   return (
@@ -9,6 +9,8 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           orientation: 'all',
+          gestureEnabled: false,
+          contentStyle: { backgroundColor: '#000' },
         }}
       />
     </RobotProvider>
