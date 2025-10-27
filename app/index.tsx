@@ -3,6 +3,7 @@ import Joystick from "./components/Joystick";
 import MjpegStream from "./components/MjpegStream";
 import { useRef, useState, useEffect } from "react";
 import { drivetrainService, type DriveCommand, cameraService } from "../services/api";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Index() {
   const isCommandInProgress = useRef(false);
@@ -11,6 +12,7 @@ export default function Index() {
     screenData.width > screenData.height
   );
   const baseStreamUrl = cameraService.getStreamUrl();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener('change', ({ window }) => {
@@ -110,11 +112,27 @@ export default function Index() {
     }
   };
 
+  // Dynamic camera container style to handle safe areas in landscape
+  const getCameraContainerStyle = () => {
+    return {
+      position: 'absolute' as const,
+      top: isLandscape ? -insets.top : -insets.top - 1,
+      left: isLandscape ? -insets.left - 3 : 0,
+      right: 0,
+      bottom: isLandscape ? -insets.bottom : 0,
+      width: isLandscape ? '110%' as const : "100%" as const,
+      height: isLandscape ? '106%' as const : "110%" as const,
+      margin: 0,
+      padding: 0,
+      backgroundColor: '#000', // Ensure black background for camera view
+    };
+  };
+
   return (
     <View style={styles.container}>
 
       {/* Camera Stream */}
-      <View style={styles.cameraContainer}>
+      <View style={getCameraContainerStyle()}>
         <MjpegStream
           baseUrl={baseStreamUrl}
           containerWidth={screenData.width}
@@ -145,22 +163,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#000",
+    margin: 0,
+    padding: 0,
   },
   text: {
     fontSize: 16,
     textAlign: "center",
     marginBottom: 20,
     paddingHorizontal: 20,
-  },
-  cameraContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    width: '100%',
-    height: '100%',
   },
   fullScreenStream: {
     width: '100%',

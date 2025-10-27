@@ -136,13 +136,13 @@ const MjpegStream: React.FC<MjpegStreamProps> = ({
       return {
         ...baseStyle,
         top: 30,
-        right: 60, // More space from right edge in landscape
+        right: 90, // More space from right edge in landscape
       };
     } else {
       // In portrait: standard bottom-right positioning
       return {
         ...baseStyle,
-        top: 80,
+        top: 130,
         right: 30,
       };
     }
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   streamContainer: {
     backgroundColor: '#000',
     justifyContent: 'center',
-    position: 'relative',
+    position: 'absolute',
     width: '100%',
     height: '100%',
   },
